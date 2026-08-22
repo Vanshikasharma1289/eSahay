@@ -8,6 +8,10 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import SmartIntake from "./pages/case/SmartIntake";
 import CaseSummary from "./pages/case/CaseSummary";
 import RightsLaw from "./pages/case/RightsLaw";
+import AuthorityRouter from "./pages/case/AuthorityRouter";
+import ActionPlan from "./pages/case/ActionPlan";
+import DocumentGenerator from "./pages/case/DocumentGenerator";
+import CaseTracking from "./pages/case/CaseTracking";
 
 function App() {
   return (
@@ -32,6 +36,26 @@ function App() {
         <Route path="/case/summary" element={<CaseSummary />} />
         <Route path="/case/rights" element={<RightsLaw />} />
 
+        <Route
+  path="/case/authority"
+  element={<AuthorityRouter />}
+/>
+
+<Route
+  path="/case/action"
+  element={<ActionPlan />}
+/>
+
+<Route
+  path="/case/document"
+  element={<DocumentGenerator />}
+/>
+
+
+<Route
+  path="/case/track"
+  element={<CaseTracking />}
+/>
 
       </Routes>
     </BrowserRouter>
