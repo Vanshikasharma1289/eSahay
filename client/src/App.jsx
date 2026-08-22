@@ -7,6 +7,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import SmartIntake from "./pages/case/SmartIntake";
 import CaseSummary from "./pages/case/CaseSummary";
+import RightsLaw from "./pages/case/RightsLaw";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
 
         <Route path="/case/intake" element={<SmartIntake />} />
         <Route path="/case/summary" element={<CaseSummary />} />
+        <Route path="/case/rights" element={<RightsLaw />} />
 
 
       </Routes>
