@@ -12,6 +12,7 @@ import AuthorityRouter from "./pages/case/AuthorityRouter";
 import ActionPlan from "./pages/case/ActionPlan";
 import DocumentGenerator from "./pages/case/DocumentGenerator";
 import CaseTracking from "./pages/case/CaseTracking";
+import VoiceAssistant from "./pages/assistant/VoiceAssistant";
 
 function App() {
   return (
@@ -56,6 +57,12 @@ function App() {
   path="/case/track"
   element={<CaseTracking />}
 />
+
+<Route
+  path="/assistant"
+  element={<VoiceAssistant />}
+/>
+
 
       </Routes>
     </BrowserRouter>
