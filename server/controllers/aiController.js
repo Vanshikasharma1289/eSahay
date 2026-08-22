@@ -155,4 +155,133 @@ Return ONLY the raw JSON object.
   }
 };
 
-module.exports = { analyzeLegalIssue };
+const chatWithAssistant = async (req, res) => {
+  try {
+    const { message, language = "en" } = req.body;
+
+    if (!message || message.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a message.",
+      });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        message: "GEMINI_API_KEY is not configured.",
+      });
+    }
+
+    const responseLanguage =
+      language === "hi" ? "Hindi" : "English";
+
+    const promptText = `
+You are eSahay, an AI-powered civic legal assistance
+assistant for citizens in India.
+
+The user is asking:
+"""
+${message}
+"""
+
+Respond in ${responseLanguage}.
+
+Rules:
+- Use simple, easy-to-understand language.
+- Help the citizen understand their situation.
+- Give practical next steps when appropriate.
+- Do not invent laws, sections, authorities, deadlines, or facts.
+- If the question requires case-specific legal verification,
+  clearly say that the information should be verified with
+  the appropriate official authority.
+- Do not claim to be a lawyer.
+- Keep the response concise and conversational.
+
+Return ONLY the response text.
+`;
+
+    const modelResource = await getAvailableModelName(apiKey);
+
+    const cleanModelName = modelResource.startsWith("models/")
+      ? modelResource
+      : `models/${modelResource}`;
+
+    console.log(
+      `[eSahay Assistant] Calling model: ${cleanModelName}`
+    );
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/${cleanModelName}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: promptText,
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error(
+        "[Gemini Assistant Error]:",
+        data
+      );
+
+      return res.status(response.status).json({
+        success: false,
+        message: "Gemini API returned an error.",
+        error:
+          data.error?.message ||
+          "Unknown error",
+      });
+    }
+
+    const reply =
+      data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!reply) {
+      return res.status(500).json({
+        success: false,
+        message: "Assistant returned an empty response.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      reply: reply.trim(),
+      language,
+    });
+
+  } catch (error) {
+    console.error(
+      "[eSahay Assistant Crash]:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to process assistant request.",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  analyzeLegalIssue,
+  chatWithAssistant,
+};
