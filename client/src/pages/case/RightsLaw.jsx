@@ -3,24 +3,73 @@ import { useNavigate } from "react-router-dom";
 
 function RightsLaw() {
   const navigate = useNavigate();
-  const [rights, setRights] = useState([]);
+
+  const [rights, setRights] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const storedData = sessionStorage.getItem("esahay_ai_result");
 
     if (!storedData) {
-      navigate("/case/intake");
+      setError(
+        "Your case information is no longer available. Please start your case again."
+      );
       return;
     }
 
     try {
       const parsedData = JSON.parse(storedData);
-      setRights(parsedData.applicableRights || []);
+
+      if (!parsedData || typeof parsedData !== "object") {
+        throw new Error("Invalid case data");
+      }
+
+      setRights(
+        Array.isArray(parsedData.applicableRights)
+          ? parsedData.applicableRights
+          : []
+      );
     } catch (error) {
       console.error("Failed to read rights data:", error);
-      navigate("/case/intake");
+
+      setError(
+        "We couldn't load the legal information for this case."
+      );
     }
-  }, [navigate]);
+  }, []);
+
+  const handleStartAgain = () => {
+    sessionStorage.removeItem("esahay_ai_result");
+    navigate("/case/intake");
+  };
+
+  if (error) {
+    return (
+      <main className="rights-law">
+        <header>
+          <p>03. RIGHTS & LAW</p>
+
+          <h1>We couldn't load your case.</h1>
+
+          <p>{error}</p>
+        </header>
+
+        <button onClick={handleStartAgain}>
+          Start Again →
+        </button>
+      </main>
+    );
+  }
+
+  if (rights === null) {
+    return (
+      <main className="rights-law">
+        <p role="status" aria-live="polite">
+          Loading your legal information...
+        </p>
+      </main>
+    );
+  }
 
   return (
     <main className="rights-law">
@@ -39,21 +88,38 @@ function RightsLaw() {
         {rights.length > 0 ? (
           rights.map((item, index) => (
             <article key={index}>
-              <span>RIGHT {String(index + 1).padStart(2, "0")}</span>
+              <span>
+                RIGHT {String(index + 1).padStart(2, "0")}
+              </span>
 
-              <h2>{item.right}</h2>
+              <h2>
+                {item.right || "Legal right identified"}
+              </h2>
 
               <p>
-                <strong>{item.lawSource}</strong>
+                <strong>
+                  {item.lawSource || "Legal source not specified"}
+                </strong>
               </p>
 
-              <p>{item.citationSummary}</p>
+              <p>
+                {item.citationSummary ||
+                  "No additional explanation was provided."}
+              </p>
             </article>
           ))
         ) : (
-          <p>
-            No specific legal rights were identified for this case.
-          </p>
+          <div role="status">
+            <p>
+              No specific legal rights were identified for this
+              case.
+            </p>
+
+            <small>
+              You can still continue to the recommended authority
+              and action plan.
+            </small>
+          </div>
         )}
       </section>
 

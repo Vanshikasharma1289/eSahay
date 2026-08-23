@@ -13,6 +13,7 @@ import ActionPlan from "./pages/case/ActionPlan";
 import DocumentGenerator from "./pages/case/DocumentGenerator";
 import CaseTracking from "./pages/case/CaseTracking";
 import VoiceAssistant from "./pages/assistant/VoiceAssistant";
+import CaseFollowUp from "./pages/case/CaseFollowUp";
 
 function App() {
   return (
@@ -61,6 +62,11 @@ function App() {
 <Route
   path="/assistant"
   element={<VoiceAssistant />}
+/>
+
+<Route
+  path="/case/follow-up"
+  element={<CaseFollowUp />}
 />
 
 
