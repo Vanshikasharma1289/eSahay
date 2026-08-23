@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./AuthorityRouter.css";
 
 function AuthorityRouter() {
   const navigate = useNavigate();
@@ -28,19 +29,13 @@ function AuthorityRouter() {
 
       const authorityData = parsedData.designatedAuthority;
 
-      if (
-        !authorityData ||
-        typeof authorityData !== "object"
-      ) {
+      if (!authorityData || typeof authorityData !== "object") {
         setAuthority(null);
       } else {
         setAuthority(authorityData);
       }
     } catch (error) {
-      console.error(
-        "Failed to read authority data:",
-        error
-      );
+      console.error("Failed to read authority data:", error);
 
       setError(
         "We couldn't load the authority information for this case."
@@ -58,9 +53,12 @@ function AuthorityRouter() {
   if (loading) {
     return (
       <main className="authority-router">
-        <p role="status" aria-live="polite">
-          Finding the right authority for your case...
-        </p>
+        <div className="authority-loading">
+          <span />
+          <p role="status" aria-live="polite">
+            Finding the right authority for your case...
+          </p>
+        </div>
       </main>
     );
   }
@@ -68,8 +66,8 @@ function AuthorityRouter() {
   if (error) {
     return (
       <main className="authority-router">
-        <header>
-          <p>04. AUTHORITY ROUTER</p>
+        <header className="authority-header">
+          <p className="eyebrow">04. AUTHORITY ROUTER</p>
 
           <h1>We couldn't load your case.</h1>
 
@@ -85,60 +83,220 @@ function AuthorityRouter() {
 
   return (
     <main className="authority-router">
-      <header>
-        <p>04. AUTHORITY ROUTER</p>
 
-        <h1>Know where to take your case.</h1>
+      {/* HEADER */}
+      <header className="authority-header">
 
-        <p>
-          Based on your case, eSahay has identified the authority
-          and submission route most relevant to your situation.
-        </p>
+        <div>
+          <p className="eyebrow">
+            04. AUTHORITY ROUTER
+          </p>
+
+          <h1>
+            Know where to
+            <br />
+            take your case.
+          </h1>
+
+          <p>
+            Based on your case, eSahay has identified the
+            authority and submission route most relevant
+            to your situation.
+          </p>
+        </div>
+
+        <div className="authority-header__mark">
+          <span>04</span>
+          <small>FIND<br />AUTHORITY</small>
+        </div>
+
       </header>
 
+
       {authority ? (
-        <section>
+        <>
+          {/* MAIN AUTHORITY */}
+          <section className="authority-main">
+
+            <div className="authority-main__top">
+
+              <div>
+                <span className="section-label">
+                  RECOMMENDED AUTHORITY
+                </span>
+
+                <h2>
+                  {authority.department ||
+                    "Authority not specified"}
+                </h2>
+              </div>
+
+              <div className="authority-main__verified">
+                <span />
+                RECOMMENDED ROUTE
+              </div>
+
+            </div>
+
+
+            <div className="authority-main__details">
+
+              <div className="authority-detail">
+                <span>01 / OFFICE</span>
+
+                <h3>
+                  {authority.officeAddress ||
+                    "Office details not available"}
+                </h3>
+
+                <p>
+                  The office or department most relevant
+                  to your case.
+                </p>
+              </div>
+
+
+              <div className="authority-detail">
+                <span>02 / SUBMISSION</span>
+
+                <h3>
+                  {authority.submissionMode ||
+                    "Submission method not specified"}
+                </h3>
+
+                <p>
+                  Recommended method for submitting
+                  your complaint or application.
+                </p>
+              </div>
+
+
+              <div className="authority-detail">
+                <span>03 / EXPECTED RESPONSE</span>
+
+                <h3>
+                  {authority.timelineDays
+                    ? `${authority.timelineDays} days`
+                    : "Timeline not specified"}
+                </h3>
+
+                <p>
+                  Indicative response timeline based
+                  on the information available.
+                </p>
+              </div>
+
+            </div>
+
+          </section>
+
+
+          {/* HOW IT WORKS */}
+          <section className="authority-process">
+
+            <div className="authority-process__heading">
+
+              <span className="section-label">
+                YOUR NEXT MOVE
+              </span>
+
+              <h2>
+                Getting there
+                <br />
+                is the easy part.
+              </h2>
+
+            </div>
+
+
+            <div className="authority-process__steps">
+
+              <article>
+                <span>01</span>
+
+                <div>
+                  <h3>Prepare</h3>
+
+                  <p>
+                    Review your case details and
+                    generated document before submission.
+                  </p>
+                </div>
+              </article>
+
+
+              <article>
+                <span>02</span>
+
+                <div>
+                  <h3>Submit</h3>
+
+                  <p>
+                    Send your complaint or application
+                    using the recommended submission route.
+                  </p>
+                </div>
+              </article>
+
+
+              <article>
+                <span>03</span>
+
+                <div>
+                  <h3>Follow up</h3>
+
+                  <p>
+                    Keep your acknowledgement and track
+                    the authority&apos;s response.
+                  </p>
+                </div>
+              </article>
+
+            </div>
+
+          </section>
+
+
+          {/* IMPORTANT NOTE */}
+          <section className="authority-note">
+
+            <span className="authority-note__icon">
+              i
+            </span>
+
+            <div>
+              <strong>
+                Before you submit
+              </strong>
+
+              <p>
+                Authority information and response timelines
+                may vary depending on your location and case.
+                Verify the final submission details with the
+                official authority before filing.
+              </p>
+            </div>
+
+          </section>
+
+        </>
+      ) : (
+
+        /* EMPTY STATE */
+        <section className="authority-empty">
+
+          <div className="authority-empty__mark">
+            ?
+          </div>
+
           <div>
-            <span>RECOMMENDED AUTHORITY</span>
+            <span className="section-label">
+              AUTHORITY ROUTE
+            </span>
 
             <h2>
-              {authority.department ||
-                "Authority not specified"}
+              No specific authority identified.
             </h2>
-          </div>
-
-          <div>
-            <span>OFFICE</span>
-
-            <p>
-              {authority.officeAddress ||
-                "Office details not available"}
-            </p>
-          </div>
-
-          <div>
-            <span>HOW TO SUBMIT</span>
-
-            <p>
-              {authority.submissionMode ||
-                "Submission method not specified"}
-            </p>
-          </div>
-
-          <div>
-            <span>EXPECTED RESPONSE</span>
-
-            <p>
-              {authority.timelineDays
-                ? `${authority.timelineDays} days`
-                : "Timeline not specified"}
-            </p>
-          </div>
-        </section>
-      ) : (
-        <section>
-          <div role="status">
-            <h2>No specific authority identified.</h2>
 
             <p>
               We couldn't determine a specific authority from
@@ -146,22 +304,54 @@ function AuthorityRouter() {
             </p>
 
             <p>
-              You can still continue to your action plan and
-              review the recommended next steps.
+              You can still continue to your action plan
+              and review the recommended next steps.
             </p>
           </div>
+
         </section>
+
       )}
 
-      <footer>
-        <button onClick={() => navigate("/case/rights")}>
+
+      {/* FOOTER */}
+      <footer className="authority-footer">
+
+        <button
+          type="button"
+          className="ui-secondary"
+          onClick={() => navigate("/case/rights")}
+        >
           ← Back to Rights
         </button>
 
-        <button onClick={() => navigate("/case/action")}>
+
+        <div className="authority-progress">
+
+          <span>03</span>
+
+          <div>
+            <i />
+            <i />
+            <i className="active" />
+            <i />
+            <i />
+          </div>
+
+          <span>05</span>
+
+        </div>
+
+
+        <button
+          type="button"
+          onClick={() => navigate("/case/action")}
+        >
           Continue to Action Plan →
         </button>
+
       </footer>
+
     </main>
   );
 }

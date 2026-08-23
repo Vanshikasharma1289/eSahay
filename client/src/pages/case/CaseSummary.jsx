@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./CaseSummary.css";
 
 function CaseSummary() {
   const navigate = useNavigate();
@@ -44,8 +45,8 @@ function CaseSummary() {
   if (error) {
     return (
       <main className="case-summary">
-        <header>
-          <p>02. AI CASE SUMMARY</p>
+        <header className="case-summary__header">
+          <p className="eyebrow">02. AI CASE SUMMARY</p>
 
           <h1>We couldn't load your case.</h1>
 
@@ -62,9 +63,12 @@ function CaseSummary() {
   if (!caseData) {
     return (
       <main className="case-summary">
-        <p role="status" aria-live="polite">
-          Loading your case summary...
-        </p>
+        <div className="case-summary__loading">
+          <span className="case-summary__loading-dot" />
+          <p role="status" aria-live="polite">
+            Reading your case...
+          </p>
+        </div>
       </main>
     );
   }
@@ -79,11 +83,13 @@ function CaseSummary() {
     draftDocument,
   } = caseData;
 
-  const hasRights = Array.isArray(applicableRights)
-    && applicableRights.length > 0;
+  const hasRights =
+    Array.isArray(applicableRights) &&
+    applicableRights.length > 0;
 
-  const hasActionSteps = Array.isArray(actionSteps)
-    && actionSteps.length > 0;
+  const hasActionSteps =
+    Array.isArray(actionSteps) &&
+    actionSteps.length > 0;
 
   const hasAuthority =
     designatedAuthority &&
@@ -100,175 +106,404 @@ function CaseSummary() {
   return (
     <main className="case-summary">
 
-      <header>
-        <p>02. AI CASE SUMMARY</p>
+      {/* HEADER */}
+      <header className="case-summary__header">
 
-        <h1>Here’s what we understood.</h1>
+        <div>
+          <p className="eyebrow">
+            02. AI CASE SUMMARY
+          </p>
 
-        <p>
-          Review the details identified from your problem before
-          continuing.
-        </p>
+          <h1>
+            Here&apos;s what
+            <br />
+            we understood.
+          </h1>
+
+          <p className="case-summary__intro">
+            We&apos;ve analysed what you told us and
+            organised the important details below.
+            Review them before continuing.
+          </p>
+        </div>
+
+        <div className="case-summary__confidence">
+          <span className="case-summary__confidence-dot" />
+          <span>AI ANALYSIS COMPLETE</span>
+        </div>
+
       </header>
 
-      {/* CASE OVERVIEW */}
-      <section>
-        <h2>Case Summary</h2>
 
-        <div>
-          <strong>Case Title</strong>
-          <p>{title || "Not available"}</p>
+      {/* CASE IDENTITY */}
+      <section className="case-summary__identity">
+
+        <div className="case-summary__identity-main">
+
+          <span className="section-label">
+            YOUR CASE
+          </span>
+
+          <h2>
+            {title || "Your Legal Case"}
+          </h2>
+
+          <span className="case-summary__category">
+            {category || "Other"}
+          </span>
+
+        </div>
+
+        <div className="case-summary__identity-mark">
+          02
+        </div>
+
+      </section>
+
+
+      {/* DETAILS GRID */}
+      <section className="case-summary__details">
+
+        <div className="section-heading">
+          <span className="section-label">
+            CASE DETAILS
+          </span>
+
+          <h2>
+            The important parts.
+          </h2>
+        </div>
+
+        <div className="case-summary__details-grid">
+
+          <div className="summary-detail">
+            <span>YOUR NAME</span>
+            <strong>
+              {extractedDetails.name || "Citizen"}
+            </strong>
+          </div>
+
+          <div className="summary-detail">
+            <span>CASE / NOTICE NUMBER</span>
+            <strong>
+              {extractedDetails.caseNumber || "N/A"}
+            </strong>
+          </div>
+
+          <div className="summary-detail">
+            <span>NOTICE DATE</span>
+            <strong>
+              {extractedDetails.noticeDate || "Not mentioned"}
+            </strong>
+          </div>
+
+          <div className="summary-detail summary-detail--wide">
+            <span>KEY ISSUE</span>
+
+            <p>
+              {extractedDetails.keyIssue ||
+                "No specific issue could be extracted."}
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* AI INTERPRETATION */}
+      <section className="case-summary__interpretation">
+
+        <div className="case-summary__interpretation-number">
+          01
         </div>
 
         <div>
-          <strong>Category</strong>
-          <p>{category || "Other"}</p>
-        </div>
+          <span className="section-label">
+            WHAT WE UNDERSTOOD
+          </span>
 
-        <div>
-          <strong>Your Name</strong>
-          <p>{extractedDetails.name || "Citizen"}</p>
-        </div>
+          <h2>
+            Your situation,
+            <br />
+            in simple terms.
+          </h2>
 
-        <div>
-          <strong>Case / Notice Number</strong>
-          <p>{extractedDetails.caseNumber || "N/A"}</p>
-        </div>
-
-        <div>
-          <strong>Notice Date</strong>
-          <p>{extractedDetails.noticeDate || "Not mentioned"}</p>
-        </div>
-
-        <div>
-          <strong>Key Issue</strong>
           <p>
             {extractedDetails.keyIssue ||
-              "No specific issue could be extracted."}
+              "The AI could not identify a specific issue from the information provided."}
           </p>
         </div>
+
       </section>
 
-      {/* APPLICABLE RIGHTS */}
-      <section>
-        <h2>Applicable Rights</h2>
+
+      {/* RIGHTS PREVIEW */}
+      <section className="case-summary__rights">
+
+        <div className="section-heading">
+
+          <div>
+            <span className="section-label">
+              LEGAL RIGHTS
+            </span>
+
+            <h2>
+              What may protect you.
+            </h2>
+          </div>
+
+          <span className="count-badge">
+            {String(applicableRights.length).padStart(2, "0")}
+          </span>
+
+        </div>
 
         {hasRights ? (
-          applicableRights.map((item, index) => (
-            <article key={index}>
-              <span>RIGHT {String(index + 1).padStart(2, "0")}</span>
+          <div className="case-summary__rights-list">
 
-              <h3>
-                {item.right || "Legal right identified"}
-              </h3>
+            {applicableRights
+              .slice(0, 3)
+              .map((item, index) => (
+                <article
+                  key={index}
+                  className="summary-right"
+                >
 
-              <p>
-                <strong>Law:</strong>{" "}
-                {item.lawSource || "Source not specified"}
-              </p>
+                  <span className="summary-right__number">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-              <p>
-                {item.citationSummary ||
-                  "No additional explanation was provided."}
-              </p>
-            </article>
-          ))
+                  <div>
+                    <h3>
+                      {item.right ||
+                        "Legal right identified"}
+                    </h3>
+
+                    <p className="summary-right__law">
+                      {item.lawSource ||
+                        "Source not specified"}
+                    </p>
+
+                    <p>
+                      {item.citationSummary ||
+                        "No additional explanation was provided."}
+                    </p>
+                  </div>
+
+                  <span className="summary-right__arrow">
+                    →
+                  </span>
+
+                </article>
+              ))}
+
+          </div>
         ) : (
-          <div role="status">
+          <div className="case-summary__empty">
             <p>
-              No specific rights were identified for this case.
+              No specific legal rights were identified
+              for this case.
             </p>
-
-            <small>
-              You can continue to review the recommended authority
-              and next steps.
-            </small>
           </div>
         )}
-      </section>
 
-      {/* AUTHORITY */}
-      <section>
-        <h2>Recommended Authority</h2>
-
-        {hasAuthority ? (
-          <>
-            <p>
-              <strong>Department:</strong>{" "}
-              {designatedAuthority.department ||
-                "Not available"}
-            </p>
-
-            <p>
-              <strong>Office:</strong>{" "}
-              {designatedAuthority.officeAddress ||
-                "Not available"}
-            </p>
-
-            <p>
-              <strong>Submission:</strong>{" "}
-              {designatedAuthority.submissionMode ||
-                "Not available"}
-            </p>
-
-            <p>
-              <strong>Expected Timeline:</strong>{" "}
-              {designatedAuthority.timelineDays
-                ? `${designatedAuthority.timelineDays} days`
-                : "Not specified"}
-            </p>
-          </>
-        ) : (
-          <p>
-            We could not identify a specific authority from the
-            information provided.
+        {applicableRights.length > 3 && (
+          <p className="case-summary__more">
+            + {applicableRights.length - 3} more
+            legal provision
+            {applicableRights.length - 3 > 1
+              ? "s"
+              : ""}{" "}
+            will be shown next.
           </p>
         )}
+
       </section>
 
-      {/* ACTION STEPS */}
-      <section>
-        <h2>What you should do next</h2>
 
-        {hasActionSteps ? (
-          <ol>
-            {actionSteps.map((step, index) => (
-              <li key={index}>
-                {step || `Action ${index + 1}`}
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <p>
-            No specific action steps were generated for this case.
-          </p>
-        )}
+      {/* AUTHORITY + ACTION */}
+      <section className="case-summary__next">
+
+        {/* AUTHORITY */}
+        <div className="next-card">
+
+          <span className="section-label">
+            RECOMMENDED AUTHORITY
+          </span>
+
+          {hasAuthority ? (
+            <>
+              <h2>
+                {designatedAuthority.department ||
+                  "Recommended Authority"}
+              </h2>
+
+              <div className="next-card__row">
+                <span>OFFICE</span>
+                <p>
+                  {designatedAuthority.officeAddress ||
+                    "Not available"}
+                </p>
+              </div>
+
+              <div className="next-card__row">
+                <span>SUBMISSION</span>
+                <p>
+                  {designatedAuthority.submissionMode ||
+                    "Not available"}
+                </p>
+              </div>
+
+              <div className="next-card__row">
+                <span>TIMELINE</span>
+                <p>
+                  {designatedAuthority.timelineDays
+                    ? `${designatedAuthority.timelineDays} days`
+                    : "Not specified"}
+                </p>
+              </div>
+            </>
+          ) : (
+            <p>
+              We could not identify a specific authority
+              from the information provided.
+            </p>
+          )}
+
+        </div>
+
+
+        {/* ACTION PLAN */}
+        <div className="next-card">
+
+          <span className="section-label">
+            NEXT STEPS
+          </span>
+
+          <h2>
+            What happens next.
+          </h2>
+
+          {hasActionSteps ? (
+            <ol className="case-summary__action-list">
+
+              {actionSteps
+                .slice(0, 3)
+                .map((step, index) => (
+                  <li key={index}>
+
+                    <span>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+
+                    <p>
+                      {step || `Action ${index + 1}`}
+                    </p>
+
+                  </li>
+                ))}
+
+            </ol>
+          ) : (
+            <p>
+              No specific action steps were generated
+              for this case.
+            </p>
+          )}
+
+        </div>
+
       </section>
 
-      {/* DRAFT DOCUMENT */}
-      <section>
-        <h2>Draft Document</h2>
+
+      {/* DOCUMENT PREVIEW */}
+      <section className="case-summary__document">
+
+        <div className="section-heading">
+
+          <div>
+            <span className="section-label">
+              DOCUMENT
+            </span>
+
+            <h2>
+              Your draft is ready.
+            </h2>
+          </div>
+
+          <span className="document-badge">
+            AI GENERATED
+          </span>
+
+        </div>
 
         {draftDocument ? (
-          <pre>{draftDocument}</pre>
+          <div className="document-preview">
+
+            <div className="document-preview__top">
+              <span>eSahay</span>
+              <span>LEGAL DOCUMENT</span>
+            </div>
+
+            <pre>
+              {draftDocument}
+            </pre>
+
+          </div>
         ) : (
-          <p>
-            No draft document was generated. You can continue
-            without it and create one later.
-          </p>
+          <div className="case-summary__empty">
+            <p>
+              No draft document was generated.
+              You can create one later.
+            </p>
+          </div>
         )}
+
       </section>
 
-      {/* ACTIONS */}
-      <footer>
-        <button onClick={() => navigate("/case/intake")}>
-          ← Back
-        </button>
 
-        <button onClick={handleContinue}>
-          Looks Good, Continue →
-        </button>
-      </footer>
+      {/* FINAL CONFIRMATION */}
+      <section className="case-summary__confirmation">
+
+        <div>
+
+          <span className="section-label">
+            BEFORE YOU CONTINUE
+          </span>
+
+          <h2>
+            Does this look right?
+          </h2>
+
+          <p>
+            Review the information above. eSahay will
+            use this understanding to identify your
+            rights and the authority you should approach.
+          </p>
+
+        </div>
+
+        <div className="case-summary__confirmation-actions">
+
+          <button
+            type="button"
+            className="ui-secondary"
+            onClick={() => navigate("/case/intake")}
+          >
+            ← Edit Case
+          </button>
+
+          <button
+            type="button"
+            onClick={handleContinue}
+          >
+            Looks Good, Continue →
+          </button>
+
+        </div>
+
+      </section>
 
     </main>
   );

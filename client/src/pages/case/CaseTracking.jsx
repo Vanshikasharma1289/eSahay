@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./CaseTracking.css";
 
 function CaseTracking() {
   const navigate = useNavigate();
@@ -71,72 +72,20 @@ function CaseTracking() {
     navigate("/case/follow-up");
   };
 
-  const handleNeedsAction = () => {
-    updateCaseStatus("action-needed");
-  };
-
-  if (error) {
-    return (
-      <main className="case-tracking">
-        <header>
-          <p>07. CASE TRACKING</p>
-
-          <h1>We couldn't load your case.</h1>
-
-          <p>{error}</p>
-        </header>
-
-        <button onClick={handleStartAgain}>
-          Start Again →
-        </button>
-      </main>
-    );
-  }
-
-  if (!caseData) {
-    return (
-      <main className="case-tracking">
-        <p role="status" aria-live="polite">
-          Loading your case...
-        </p>
-      </main>
-    );
-  }
-
-  const caseTitle =
-    caseData.title || "Your Legal Case";
-
-  const category =
-    caseData.category || "General";
-
-  const authority =
-    caseData.designatedAuthority?.department ||
-    "the recommended authority";
-
-  const submissionMode =
-    caseData.designatedAuthority?.submissionMode ||
-    "the recommended submission method";
-
   const getCurrentStage = () => {
     switch (caseStatus) {
       case "ready":
         return "Ready to Submit";
-
       case "submitted":
         return "Submitted";
-
       case "review":
         return "Under Review";
-
       case "response-received":
         return "Response Received";
-
       case "action-needed":
-        return "Further Action Required";
-
+        return "Further Action";
       case "resolved":
         return "Resolved";
-
       default:
         return "Ready to Submit";
     }
@@ -146,30 +95,26 @@ function CaseTracking() {
     const baseSteps = [
       {
         number: "01",
-        title: "Intake",
-        description:
-          "Your problem was submitted.",
+        title: "Understand",
+        description: "Your problem was submitted and understood.",
         status: "Completed",
       },
       {
         number: "02",
-        title: "Review",
-        description:
-          "Your case was analysed by eSahay.",
+        title: "Know your rights",
+        description: "Applicable rights and legal provisions were identified.",
         status: "Completed",
       },
       {
         number: "03",
-        title: "Action Plan",
-        description:
-          "Your rights, authority and next steps were identified.",
+        title: "Find authority",
+        description: "The most relevant authority was identified.",
         status: "Completed",
       },
       {
         number: "04",
-        title: "Document",
-        description:
-          "Your case-specific document is ready.",
+        title: "Take action",
+        description: "Your action plan and document are ready.",
         status: "Completed",
       },
     ];
@@ -179,23 +124,20 @@ function CaseTracking() {
         ...baseSteps,
         {
           number: "05",
-          title: "Submission",
-          description:
-            `Submit your case to ${authority}.`,
-          status: "Next",
+          title: "Submit",
+          description: "Submit your prepared case to the recommended authority.",
+          status: "Current",
         },
         {
           number: "06",
-          title: "Authority Review",
-          description:
-            "Await the authority's response.",
+          title: "Authority review",
+          description: "Wait for the authority to review your case.",
           status: "Pending",
         },
         {
           number: "07",
           title: "Resolution",
-          description:
-            "The outcome will be determined after the authority responds.",
+          description: "The outcome will be determined after a response.",
           status: "Pending",
         },
       ];
@@ -206,23 +148,20 @@ function CaseTracking() {
         ...baseSteps,
         {
           number: "05",
-          title: "Submission",
-          description:
-            "Your case has been submitted.",
+          title: "Submit",
+          description: "You confirmed that the case was submitted.",
           status: "Completed",
         },
         {
           number: "06",
-          title: "Authority Review",
-          description:
-            "Your case is waiting for review.",
-          status: "Next",
+          title: "Authority review",
+          description: "Your case is waiting for a response.",
+          status: "Current",
         },
         {
           number: "07",
           title: "Resolution",
-          description:
-            "Await the authority's response.",
+          description: "The case will move toward resolution after a response.",
           status: "Pending",
         },
       ];
@@ -233,23 +172,20 @@ function CaseTracking() {
         ...baseSteps,
         {
           number: "05",
-          title: "Submission",
-          description:
-            "Your case has been submitted.",
+          title: "Submit",
+          description: "Your case was submitted.",
           status: "Completed",
         },
         {
           number: "06",
-          title: "Authority Review",
-          description:
-            "The authority is reviewing your case.",
+          title: "Authority review",
+          description: "The authority is currently reviewing your case.",
           status: "Current",
         },
         {
           number: "07",
           title: "Resolution",
-          description:
-            "Your case will move toward resolution after a response.",
+          description: "Your case will move toward resolution after a response.",
           status: "Pending",
         },
       ];
@@ -260,23 +196,20 @@ function CaseTracking() {
         ...baseSteps,
         {
           number: "05",
-          title: "Submission",
-          description:
-            "Your case was submitted.",
+          title: "Submit",
+          description: "Your case was submitted.",
           status: "Completed",
         },
         {
           number: "06",
-          title: "Authority Review",
-          description:
-            "A response has been received from the authority.",
+          title: "Authority review",
+          description: "A response has been received.",
           status: "Completed",
         },
         {
           number: "07",
           title: "Follow-up",
-          description:
-            "Review the authority's response and determine the next step.",
+          description: "Review the response and determine what happens next.",
           status: "Current",
         },
       ];
@@ -287,23 +220,20 @@ function CaseTracking() {
         ...baseSteps,
         {
           number: "05",
-          title: "Submission",
-          description:
-            "Your case was submitted.",
+          title: "Submit",
+          description: "Your case was submitted.",
           status: "Completed",
         },
         {
           number: "06",
-          title: "Authority Review",
-          description:
-            "The authority's response requires further action.",
+          title: "Authority review",
+          description: "The authority responded to your case.",
           status: "Completed",
         },
         {
           number: "07",
-          title: "Further Action",
-          description:
-            "eSahay can help you determine the next escalation step.",
+          title: "Further action",
+          description: "Additional action or escalation may be required.",
           status: "Current",
         },
       ];
@@ -314,23 +244,20 @@ function CaseTracking() {
         ...baseSteps,
         {
           number: "05",
-          title: "Submission",
-          description:
-            "Your case was submitted.",
+          title: "Submit",
+          description: "Your case was submitted.",
           status: "Completed",
         },
         {
           number: "06",
-          title: "Authority Review",
-          description:
-            "The authority reviewed your case.",
+          title: "Authority review",
+          description: "The authority reviewed your case.",
           status: "Completed",
         },
         {
           number: "07",
           title: "Resolution",
-          description:
-            "The citizen confirmed that the issue was resolved.",
+          description: "You confirmed that the issue was resolved.",
           status: "Completed",
         },
       ];
@@ -339,25 +266,106 @@ function CaseTracking() {
     return baseSteps;
   };
 
-  const steps = getSteps();
+  const steps = useMemo(
+    () => getSteps(),
+    [caseStatus]
+  );
+
+  const caseTitle =
+    caseData?.title || "Your Legal Case";
+
+  const category =
+    caseData?.category || "General";
+
+  const authority =
+    caseData?.designatedAuthority?.department ||
+    "the recommended authority";
+
+  const submissionMode =
+    caseData?.designatedAuthority?.submissionMode ||
+    "the recommended submission method";
+
+  const currentStage = getCurrentStage();
+
+  if (error) {
+    return (
+      <main className="case-tracking">
+        <section className="tracking-error">
+          <span className="tracking-error__icon">!</span>
+
+          <p className="eyebrow">07. CASE TRACKING</p>
+
+          <h1>We couldn't load your case.</h1>
+
+          <p>{error}</p>
+
+          <button onClick={handleStartAgain}>
+            Start Again →
+          </button>
+        </section>
+      </main>
+    );
+  }
+
+  if (!caseData) {
+    return (
+      <main className="case-tracking">
+        <div className="tracking-loading">
+          <span />
+          <p role="status" aria-live="polite">
+            Loading your case...
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="case-tracking">
-      <header>
-        <p>07. CASE TRACKING</p>
 
-        <h1>Track your case at every stage.</h1>
+      {/* HEADER */}
 
-        <p>
-          Stay updated on what has been completed, what comes next,
-          and where your case currently stands.
-        </p>
+      <header className="tracking-header">
+
+        <div>
+          <p className="eyebrow">
+            07. CASE TRACKING
+          </p>
+
+          <h1>
+            Track your case
+            <br />
+            at every stage.
+          </h1>
+
+          <p>
+            Follow your case from submission to resolution.
+            Every stage shows what has happened and what
+            you need to do next.
+          </p>
+        </div>
+
+        <div className="tracking-header__status">
+          <span className="status-dot" />
+
+          <div>
+            <small>CURRENT STATUS</small>
+
+            <strong>
+              {currentStage}
+            </strong>
+          </div>
+        </div>
+
       </header>
 
+
       {/* CASE OVERVIEW */}
-      <section>
+
+      <section className="case-overview">
+
         <div>
-          <span>CASE TITLE</span>
+          <span>CASE</span>
 
           <h2>{caseTitle}</h2>
         </div>
@@ -369,139 +377,327 @@ function CaseTracking() {
         </div>
 
         <div>
-          <span>CASE STATUS</span>
+          <span>AUTHORITY</span>
 
-          <p>{getCurrentStage()}</p>
+          <p>{authority}</p>
         </div>
+
+        <div>
+          <span>STATUS</span>
+
+          <p>{currentStage}</p>
+        </div>
+
       </section>
 
-      {/* CASE JOURNEY */}
-      <section>
-        {steps.map((step) => (
-          <article key={step.number}>
-            <span>{step.number}</span>
 
-            <div>
-              <h3>{step.title}</h3>
+      {/* JOURNEY */}
 
-              <p>{step.description}</p>
-            </div>
+      <section className="tracking-journey">
 
-            <strong>{step.status}</strong>
-          </article>
-        ))}
+        <div className="journey-heading">
+          <div>
+            <span className="section-label">
+              YOUR JOURNEY
+            </span>
+
+            <h2>
+              From problem
+              <br />
+              to resolution.
+            </h2>
+          </div>
+
+          <span className="journey-count">
+            {steps.filter(
+              (step) => step.status === "Completed"
+            ).length}
+            /
+            {steps.length}
+            COMPLETE
+          </span>
+        </div>
+
+
+        <div className="journey-timeline">
+
+          {steps.map((step, index) => {
+
+            const isCompleted =
+              step.status === "Completed";
+
+            const isCurrent =
+              step.status === "Current" ||
+              step.status === "Next";
+
+            return (
+              <article
+                key={step.number}
+                className={`journey-step ${
+                  isCompleted
+                    ? "journey-step--completed"
+                    : ""
+                } ${
+                  isCurrent
+                    ? "journey-step--current"
+                    : ""
+                }`}
+              >
+
+                <div className="journey-step__number">
+
+                  {isCompleted ? (
+                    <span>✓</span>
+                  ) : (
+                    step.number
+                  )}
+
+                </div>
+
+                {index < steps.length - 1 && (
+                  <div
+                    className={`journey-step__connector ${
+                      isCompleted
+                        ? "journey-step__connector--completed"
+                        : ""
+                    }`}
+                  />
+                )}
+
+                <div className="journey-step__content">
+
+                  <div className="journey-step__meta">
+
+                    <span>
+                      STEP {step.number}
+                    </span>
+
+                    <strong>
+                      {step.status}
+                    </strong>
+
+                  </div>
+
+                  <h3>
+                    {step.title}
+                  </h3>
+
+                  <p>
+                    {step.description}
+                  </p>
+
+                </div>
+
+              </article>
+            );
+          })}
+
+        </div>
+
       </section>
+
 
       {/* CURRENT ACTION */}
-      <section>
-        <span>CURRENT ACTION</span>
+
+      <section className="current-action">
+
+        <div className="current-action__heading">
+
+          <span className="section-label">
+            CURRENT ACTION
+          </span>
+
+          <div className="current-action__indicator">
+            <i />
+            {currentStage}
+          </div>
+
+        </div>
+
 
         {caseStatus === "ready" && (
-          <>
-            <h2>Ready to submit your case.</h2>
+          <div className="action-state">
 
-            <p>
-              Your document is prepared. Submit it to{" "}
-              <strong>{authority}</strong> using{" "}
-              <strong>{submissionMode}</strong>.
-            </p>
+            <div>
+              <h2>
+                Ready to submit your case.
+              </h2>
 
-            <button
-              onClick={() =>
-                navigate("/case/document")
-              }
-            >
-              View Document
-            </button>
+              <p>
+                Your case document is prepared. Submit it
+                to <strong>{authority}</strong> using{" "}
+                <strong>{submissionMode}</strong>.
+              </p>
 
-            <button onClick={handleSubmitCase}>
-              I've Submitted This Case
-            </button>
-          </>
+              <small>
+                eSahay cannot verify the submission itself
+                in this MVP. Confirm here after you submit it.
+              </small>
+            </div>
+
+            <div className="action-state__buttons">
+
+              <button
+                className="ui-secondary"
+                onClick={() =>
+                  navigate("/case/document")
+                }
+              >
+                View Document
+              </button>
+
+              <button onClick={handleSubmitCase}>
+                I've Submitted This Case →
+              </button>
+
+            </div>
+
+          </div>
         )}
+
 
         {caseStatus === "submitted" && (
-          <>
-            <h2>Your case has been submitted.</h2>
+          <div className="action-state">
 
-            <p>
-              Your case is now awaiting review by{" "}
-              <strong>{authority}</strong>.
-            </p>
+            <div>
+              <h2>
+                Your case has been submitted.
+              </h2>
 
-            <button onClick={handleMarkUnderReview}>
-              Mark as Under Review
-            </button>
-          </>
+              <p>
+                You've confirmed submission to{" "}
+                <strong>{authority}</strong>.
+                The next stage is waiting for the authority's
+                response.
+              </p>
+            </div>
+
+            <div className="action-state__buttons">
+
+              <button
+                onClick={handleMarkUnderReview}
+              >
+                Mark as Under Review →
+              </button>
+
+            </div>
+
+          </div>
         )}
+
 
         {caseStatus === "review" && (
-          <>
-            <h2>Your case is under review.</h2>
+          <div className="action-state">
 
-            <p>
-              Are you still waiting for a response, or has the
-              authority responded?
-            </p>
+            <div>
+              <h2>
+                Your case is under review.
+              </h2>
 
-            <button onClick={handleResponseReceived}>
-              I Received a Response
-            </button>
+              <p>
+                You're currently waiting for a response from{" "}
+                <strong>{authority}</strong>.
+              </p>
 
-            <p>
-              If you haven't received a response yet, you can
-              leave this case in the current review stage.
-            </p>
-          </>
+              <small>
+                When you receive a response, come back here
+                and continue the case.
+              </small>
+            </div>
+
+            <div className="action-state__buttons">
+
+              <button
+                onClick={handleResponseReceived}
+              >
+                I Received a Response →
+              </button>
+
+            </div>
+
+          </div>
         )}
+
 
         {caseStatus === "response-received" && (
-          <>
-            <h2>Authority response received.</h2>
+          <div className="action-state">
 
-            <p>
-              Let's understand the response and determine
-              whether your issue has actually been resolved.
-            </p>
+            <div>
+              <h2>
+                Authority response received.
+              </h2>
 
-            <button
-              onClick={() =>
-                navigate("/case/follow-up")
-              }
-            >
-              Analyse Response →
-            </button>
-          </>
+              <p>
+                The response is now ready for review.
+                Let's determine whether your issue was
+                actually resolved.
+              </p>
+            </div>
+
+            <div className="action-state__buttons">
+
+              <button
+                onClick={() =>
+                  navigate("/case/follow-up")
+                }
+              >
+                Analyse Response →
+              </button>
+
+            </div>
+
+          </div>
         )}
+
 
         {caseStatus === "action-needed" && (
-          <>
-            <h2>Further action may be required.</h2>
+          <div className="action-state">
 
-            <p>
-              The authority's response did not fully resolve
-              your case. eSahay can help identify the next
-              escalation route.
-            </p>
+            <div>
+              <h2>
+                Further action may be required.
+              </h2>
 
-            <button
-              onClick={() =>
-                navigate("/case/follow-up")
-              }
-            >
-              Continue with Follow-up →
-            </button>
-          </>
+              <p>
+                The authority's response did not fully resolve
+                the issue. eSahay can help identify the next
+                escalation route.
+              </p>
+            </div>
+
+            <div className="action-state__buttons">
+
+              <button
+                onClick={() =>
+                  navigate("/case/follow-up")
+                }
+              >
+                Continue Follow-up →
+              </button>
+
+            </div>
+
+          </div>
         )}
 
-        {caseStatus === "resolved" && (
-          <>
-            <h2>Your case has been resolved. ✓</h2>
 
-            <p>
-              The issue has been marked as resolved based on
-              the citizen's confirmation.
-            </p>
+        {caseStatus === "resolved" && (
+          <div className="action-state action-state--resolved">
+
+            <div className="resolved-icon">
+              ✓
+            </div>
+
+            <div>
+              <h2>
+                Your case has been resolved.
+              </h2>
+
+              <p>
+                You confirmed that the issue has been
+                resolved. This case is now complete.
+              </p>
+            </div>
 
             <button
               onClick={() =>
@@ -510,68 +706,86 @@ function CaseTracking() {
             >
               Return to Dashboard →
             </button>
-          </>
+
+          </div>
         )}
+
       </section>
+
 
       {/* LATEST UPDATE */}
-      <section>
-        <span>LATEST UPDATE</span>
 
-        {caseStatus === "ready" && (
-          <p>
-            Your case has been analysed successfully and your
-            document is ready for submission.
-          </p>
-        )}
+      <section className="latest-update">
 
-        {caseStatus === "submitted" && (
-          <p>
-            You marked this case as submitted to{" "}
-            {authority}.
-          </p>
-        )}
+        <div>
+          <span className="section-label">
+            LATEST UPDATE
+          </span>
 
-        {caseStatus === "review" && (
-          <p>
-            Your case is currently under review by{" "}
-            {authority}. If you receive a response, return
-            here to continue.
-          </p>
-        )}
+          <span className="update-time">
+            CURRENT CASE STATE
+          </span>
+        </div>
 
-        {caseStatus === "response-received" && (
-          <p>
-            A response has been received from{" "}
-            {authority}. Analyse it to determine what should
-            happen next.
-          </p>
-        )}
+        <p>
+          {caseStatus === "ready" &&
+            `Your case has been analysed successfully. Your document is ready to submit to ${authority}.`}
 
-        {caseStatus === "action-needed" && (
-          <p>
-            Further action may be required. Continue to the
-            follow-up flow for an escalation recommendation.
-          </p>
-        )}
+          {caseStatus === "submitted" &&
+            `You confirmed that your case was submitted to ${authority}.`}
 
-        {caseStatus === "resolved" && (
-          <p>
-            This case has been marked as resolved based on
-            the citizen's confirmation.
-          </p>
-        )}
+          {caseStatus === "review" &&
+            `Your case is currently awaiting a response from ${authority}.`}
+
+          {caseStatus === "response-received" &&
+            `A response has been received from ${authority}. Review it to determine the next step.`}
+
+          {caseStatus === "action-needed" &&
+            "Further action may be required. Continue through the follow-up flow."}
+
+          {caseStatus === "resolved" &&
+            "This case has been marked as resolved based on your confirmation."}
+        </p>
+
       </section>
 
-      {/* NAVIGATION */}
-      <footer>
+
+      {/* FOOTER */}
+
+      <footer className="tracking-footer">
+
         <button
+          className="ui-secondary"
           onClick={() =>
             navigate("/case/document")
           }
         >
           ← Back to Document
         </button>
+
+        <div className="tracking-progress">
+
+          <span>01</span>
+
+          <div>
+            {steps.map((step) => (
+              <i
+                key={step.number}
+                className={
+                  step.status === "Completed"
+                    ? "done"
+                    : step.status === "Current" ||
+                      step.status === "Next"
+                    ? "active"
+                    : ""
+                }
+              />
+            ))}
+          </div>
+
+          <span>07</span>
+
+        </div>
 
         <button
           onClick={() =>
@@ -580,7 +794,9 @@ function CaseTracking() {
         >
           Return to Dashboard →
         </button>
+
       </footer>
+
     </main>
   );
 }

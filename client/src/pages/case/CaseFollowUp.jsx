@@ -1,6 +1,7 @@
 import api from "../../services/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./CaseFollowUp.css";
 
 function CaseFollowUp() {
   const navigate = useNavigate();
@@ -35,6 +36,30 @@ function CaseFollowUp() {
       }
 
       setCaseData(parsedData);
+
+      // Restore previously saved authority response + analysis
+      const savedResponse =
+        sessionStorage.getItem("esahay_case_response");
+
+      if (savedResponse) {
+        try {
+          const parsedResponse =
+            JSON.parse(savedResponse);
+
+          if (parsedResponse.response) {
+            setResponseText(parsedResponse.response);
+          }
+
+          if (parsedResponse.analysis) {
+            setAnalysis(parsedResponse.analysis);
+          }
+        } catch (responseError) {
+          console.error(
+            "Failed to restore saved response:",
+            responseError
+          );
+        }
+      }
     } catch (error) {
       console.error(
         "Failed to read case data:",
@@ -65,14 +90,6 @@ function CaseFollowUp() {
     setAnalysis(null);
 
     try {
-      /*
-       * Send the authority response to the backend.
-       *
-       * The backend can later use Gemini/AI to analyse
-       * whether the original issue was resolved and
-       * what the citizen should do next.
-       */
-
       const response = await api.post(
         "/ai/analyze-response",
         {
@@ -97,6 +114,12 @@ function CaseFollowUp() {
           response: text,
           analysis: result,
         })
+      );
+
+      // Keep tracking state synchronized
+      sessionStorage.setItem(
+        "esahay_case_status",
+        "response-received"
       );
     } catch (error) {
       console.error(
@@ -147,12 +170,24 @@ function CaseFollowUp() {
     navigate("/case/intake");
   };
 
+  const handleEditResponse = () => {
+    setAnalysis(null);
+    setError("");
+    setInputError("");
+  };
+
   if (loading) {
     return (
       <main className="case-follow-up">
-        <p role="status" aria-live="polite">
-          Loading your case...
-        </p>
+        <div className="followup-loading">
+          <span />
+          <p
+            role="status"
+            aria-live="polite"
+          >
+            Loading your case...
+          </p>
+        </div>
       </main>
     );
   }
@@ -160,19 +195,27 @@ function CaseFollowUp() {
   if (error && !caseData) {
     return (
       <main className="case-follow-up">
-        <header>
-          <p>08. CASE FOLLOW-UP</p>
+        <section className="followup-error">
+
+          <span className="followup-error__icon">
+            !
+          </span>
+
+          <p className="eyebrow">
+            08. CASE FOLLOW-UP
+          </p>
 
           <h1>
             We couldn't load your case.
           </h1>
 
           <p>{error}</p>
-        </header>
 
-        <button onClick={handleStartAgain}>
-          Start Again →
-        </button>
+          <button onClick={handleStartAgain}>
+            Start Again →
+          </button>
+
+        </section>
       </main>
     );
   }
@@ -182,148 +225,428 @@ function CaseFollowUp() {
     "Your Legal Case";
 
   const authority =
-    caseData?.designatedAuthority
-      ?.department ||
+    caseData?.designatedAuthority?.department ||
     "the recommended authority";
 
   return (
     <main className="case-follow-up">
-      <header>
-        <p>08. CASE FOLLOW-UP</p>
 
-        <h1>
-          What did the authority say?
-        </h1>
+      {/* HEADER */}
 
-        <p>
-          Help eSahay understand the response you
-          received so we can identify what should
-          happen next.
-        </p>
-      </header>
+      <header className="followup-header">
 
-      {/* CASE CONTEXT */}
-      <section>
-        <span>YOUR CASE</span>
+        <div>
 
-        <h2>{caseTitle}</h2>
-
-        <p>
-          Response received from:{" "}
-          <strong>{authority}</strong>
-        </p>
-      </section>
-
-      {/* RESPONSE INPUT */}
-      {!analysis && (
-        <section>
-          <label htmlFor="authority-response">
-            AUTHORITY RESPONSE
-          </label>
-
-          <p>
-            Paste the message, letter, email, or
-            decision you received from the authority.
+          <p className="eyebrow">
+            08. CASE FOLLOW-UP
           </p>
 
-          <textarea
-            id="authority-response"
-            value={responseText}
-            onChange={(e) => {
-              setResponseText(e.target.value);
-              setInputError("");
-              setError("");
-            }}
-            placeholder="Paste the authority's response here..."
-            rows={12}
-            disabled={analyzing}
-          />
+          <h1>
+            What did the
+            <br />
+            authority say?
+          </h1>
 
-          {inputError && (
-            <p role="alert">
-              {inputError}
-            </p>
-          )}
+          <p>
+            Share the response you received and eSahay
+            will help you understand what it means and
+            what you should do next.
+          </p>
 
-          {error && (
-            <p role="alert">
-              {error}
-            </p>
-          )}
+        </div>
 
-          <button
-            onClick={handleAnalyseResponse}
-            disabled={analyzing}
-          >
-            {analyzing
-              ? "Analysing Response..."
-              : "Analyse Response →"}
-          </button>
-        </section>
-      )}
+        <div className="followup-header__mark">
 
-      {/* AI ANALYSIS */}
-      {analysis && (
-        <section>
-          <span>AI RESPONSE ANALYSIS</span>
+          <span>08</span>
+
+          <small>
+            RESPONSE
+            <br />
+            REVIEW
+          </small>
+
+        </div>
+
+      </header>
+
+
+      {/* CASE CONTEXT */}
+
+      <section className="followup-context">
+
+        <div>
+
+          <span>YOUR CASE</span>
 
           <h2>
-            {analysis.outcome ||
-              "Response analysed"}
+            {caseTitle}
           </h2>
 
-          <div>
-            <span>WHAT WE UNDERSTOOD</span>
+        </div>
 
-            <p>
-              {analysis.summary ||
-                analysis.explanation ||
-                "The response has been analysed."}
-            </p>
-          </div>
+        <div>
 
-          <div>
-            <span>RECOMMENDED NEXT STEP</span>
+          <span>RESPONSE FROM</span>
 
-            <p>
-              {analysis.nextStep ||
-                "Review the response and determine the appropriate next action."}
-            </p>
-          </div>
+          <p>
+            {authority}
+          </p>
 
-          {analysis.escalationAuthority && (
+        </div>
+
+        <div>
+
+          <span>CASE STATUS</span>
+
+          <p className="followup-status">
+            Response Received
+          </p>
+
+        </div>
+
+      </section>
+
+
+      {/* RESPONSE INPUT */}
+
+      {!analysis && (
+        <section className="response-workspace">
+
+          <div className="response-workspace__heading">
+
             <div>
-              <span>RECOMMENDED ESCALATION</span>
+
+              <span className="section-label">
+                AUTHORITY RESPONSE
+              </span>
+
+              <h2>
+                Paste what you received.
+              </h2>
 
               <p>
-                {analysis.escalationAuthority}
+                This can be a letter, email, SMS,
+                notice, decision, or any other response
+                from the authority.
               </p>
+
+            </div>
+
+            <span className="response-step">
+              01 / 02
+            </span>
+
+          </div>
+
+
+          <div className="response-editor">
+
+            <div className="response-editor__top">
+
+              <span>
+                AUTHORITY RESPONSE
+              </span>
+
+              <span>
+                {responseText.length} characters
+              </span>
+
+            </div>
+
+            <textarea
+              id="authority-response"
+              value={responseText}
+              onChange={(e) => {
+                setResponseText(e.target.value);
+                setInputError("");
+                setError("");
+              }}
+              placeholder={
+                "Paste the authority's response here...\n\nExample:\nYour complaint has been reviewed. The disputed amount will be adjusted in the next billing cycle..."
+              }
+              rows={14}
+              disabled={analyzing}
+              aria-describedby="response-help"
+            />
+
+          </div>
+
+
+          <p
+            id="response-help"
+            className="response-help"
+          >
+            eSahay will analyse the response and suggest
+            the most appropriate next step.
+          </p>
+
+
+          {inputError && (
+            <div
+              className="followup-alert"
+              role="alert"
+            >
+              {inputError}
             </div>
           )}
 
-          <div>
-            <span>WHAT WOULD YOU LIKE TO DO?</span>
+          {error && (
+            <div
+              className="followup-alert"
+              role="alert"
+            >
+              {error}
+            </div>
+          )}
 
-            <button onClick={handleResolved}>
-              My Issue Is Resolved ✓
+
+          <div className="response-actions">
+
+            <div>
+
+              <span className="privacy-note">
+                SAFETY REMINDER
+              </span>
+
+              <p>
+                Don't include passwords, OTPs, or sensitive
+                account credentials.
+              </p>
+
+            </div>
+
+            <button
+              onClick={handleAnalyseResponse}
+              disabled={analyzing}
+            >
+              {analyzing
+                ? "Analysing Response..."
+                : "Analyse Response →"}
             </button>
 
-            <button onClick={handleFurtherAction}>
-              I Need Further Action →
-            </button>
           </div>
+
         </section>
       )}
 
-      {/* NAVIGATION */}
-      <footer>
+
+      {/* AI ANALYSIS */}
+
+      {analysis && (
+        <section className="response-analysis">
+
+          <div className="analysis-heading">
+
+            <div>
+
+              <span className="section-label">
+                AI RESPONSE ANALYSIS
+              </span>
+
+              <h2>
+                Here's what we understood.
+              </h2>
+
+            </div>
+
+            <span className="response-step">
+              02 / 02
+            </span>
+
+          </div>
+
+
+          {/* OUTCOME */}
+
+          <div className="analysis-outcome">
+
+            <span>
+              OUTCOME
+            </span>
+
+            <h3>
+              {analysis.outcome ||
+                "Response analysed"}
+            </h3>
+
+          </div>
+
+
+          {/* ANALYSIS DETAILS */}
+
+          <div className="analysis-grid">
+
+            <article>
+
+              <span>
+                WHAT WE UNDERSTOOD
+              </span>
+
+              <p>
+                {analysis.summary ||
+                  analysis.explanation ||
+                  "The response has been analysed."}
+              </p>
+
+            </article>
+
+
+            <article>
+
+              <span>
+                RECOMMENDED NEXT STEP
+              </span>
+
+              <p>
+                {analysis.nextStep ||
+                  "Review the response and determine the appropriate next action."}
+              </p>
+
+            </article>
+
+
+            {analysis.escalationAuthority && (
+              <article>
+
+                <span>
+                  RECOMMENDED ESCALATION
+                </span>
+
+                <p>
+                  {analysis.escalationAuthority}
+                </p>
+
+              </article>
+            )}
+
+          </div>
+
+
+          {/* DECISION */}
+
+          <div className="analysis-decision">
+
+            <div>
+
+              <span className="section-label">
+                YOUR DECISION
+              </span>
+
+              <h2>
+                What would you like to do?
+              </h2>
+
+              <p>
+                Choose the option that best matches
+                what happened after the authority's
+                response.
+              </p>
+
+            </div>
+
+
+            <div className="decision-buttons">
+
+              <button
+                className="decision-resolved"
+                onClick={handleResolved}
+              >
+
+                <span>
+                  ✓
+                </span>
+
+                <div>
+
+                  <strong>
+                    My issue is resolved
+                  </strong>
+
+                  <small>
+                    Close this case
+                  </small>
+
+                </div>
+
+              </button>
+
+
+              <button
+                className="decision-action"
+                onClick={handleFurtherAction}
+              >
+
+                <span>
+                  →
+                </span>
+
+                <div>
+
+                  <strong>
+                    I need further action
+                  </strong>
+
+                  <small>
+                    Continue with escalation
+                  </small>
+
+                </div>
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+          {/* EDIT RESPONSE */}
+
+          <button
+            type="button"
+            className="edit-response-button"
+            onClick={handleEditResponse}
+          >
+            ← Edit Authority Response
+          </button>
+
+        </section>
+      )}
+
+
+      {/* FOOTER */}
+
+      <footer className="followup-footer">
+
         <button
+          className="ui-secondary"
           onClick={() =>
             navigate("/case/track")
           }
         >
           ← Back to Case Tracking
         </button>
+
+
+        <div className="followup-progress">
+
+          <span>
+            07
+          </span>
+
+          <div>
+
+            <i className="done" />
+
+            <i className="active" />
+
+          </div>
+
+          <span>
+            08
+          </span>
+
+        </div>
+
 
         <button
           onClick={() =>
@@ -332,7 +655,9 @@ function CaseFollowUp() {
         >
           Dashboard →
         </button>
+
       </footer>
+
     </main>
   );
 }
