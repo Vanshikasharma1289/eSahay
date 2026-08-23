@@ -1,0 +1,124 @@
+/* =========================================================
+   eSahay — Register
+   ========================================================= */
+
+.register-page .auth-brand {
+  background:
+    radial-gradient(
+      circle at 10% 85%,
+      rgba(255, 255, 255, 0.07),
+      transparent 30%
+    ),
+    var(--bronze-dark);
+}
+
+
+/* =========================================================
+   SELECT
+   ========================================================= */
+
+.auth-field select {
+  width: 100%;
+  height: 49px;
+
+  padding: 0 15px;
+
+  border: 1px solid var(--line);
+  border-radius: 6px;
+
+  outline: none;
+
+  appearance: none;
+
+  background:
+    linear-gradient(45deg, transparent 50%, var(--bronze) 50%)
+      calc(100% - 17px) 21px / 5px 5px no-repeat,
+    linear-gradient(135deg, var(--bronze) 50%, transparent 50%)
+      calc(100% - 13px) 21px / 5px 5px no-repeat,
+    #f8f1e6;
+
+  color: var(--ink);
+
+  font-size: 12px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.auth-field select:hover {
+  border-color: rgba(107, 66, 25, 0.3);
+}
+
+.auth-field select:focus {
+  border-color: var(--bronze);
+
+  background-color: #fffdf8;
+
+  box-shadow:
+    0 0 0 3px rgba(107, 66, 25, 0.06);
+}
+
+
+/* =========================================================
+   REGISTER FORM TIGHTENING
+   ========================================================= */
+
+.register-page .auth-form__heading {
+  margin-bottom: 30px;
+}
+
+.register-page .auth-field {
+  margin-bottom: 16px;
+}
+
+.register-page .auth-divider {
+  margin-top: 25px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .register-page .auth-brand {
+    min-height: 290px;
+  }
+
+  .register-page .auth-brand__content {
+    margin-top: 42px;
+  }
+
+  .register-page .auth-form-panel {
+    padding-top: 34px;
+  }
+
+  .register-page .auth-form__heading {
+    margin-bottom: 27px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+  .register-page .auth-brand {
+    min-height: 270px;
+  }
+
+  .register-page .auth-brand__content {
+    margin-top: 32px;
+  }
+
+  .register-page .auth-field select {
+    height: 47px;
+  }
+}
