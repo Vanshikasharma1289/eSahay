@@ -1,3 +1,4 @@
+import ladyJustice from "../assets/lady-justice.png";
 import { Link } from "react-router-dom";
 import "./Landing.css";
 
@@ -49,7 +50,8 @@ const features = [
 function Landing() {
   return (
     <div className="landing">
-      {/* NAVBAR */}
+
+      {/* ================= NAVBAR ================= */}
       <header className="landing-nav">
         <Link to="/" className="landing-logo">
           eSahay
@@ -67,72 +69,136 @@ function Landing() {
         </Link>
       </header>
 
-      {/* HERO */}
+
+      {/* ================= MAIN ================= */}
       <main id="home">
+
+        {/* ================= HERO ================= */}
         <section className="hero">
-          <div className="hero-watermark">LAW</div>
 
-          <div className="hero-copy">
-            <p className="eyebrow">AI-POWERED CITIZEN ASSISTANCE</p>
-
-            <h1>
-              Your rights.
-              <br />
-              <span>Our priority.</span>
-            </h1>
-
-            <p className="hero-description">
-              From a confusing notice to a clear path forward. Understand
-              your problem, know your rights and take the right action.
-            </p>
-
-            <div className="hero-actions">
-              <Link to="/register" className="primary-button">
-                Start your case <span>↗</span>
-              </Link>
-
-              <a href="#journey" className="text-button">
-                See how it works ↓
-              </a>
-            </div>
+          {/* Background watermark */}
+          <div className="hero-watermark">
+            LAW
           </div>
 
-          <div className="hero-visual">
-            <div className="hero-frame">
-              <div className="justice-placeholder">
-                <span>⚖</span>
+
+          {/* HERO MAIN CONTENT */}
+          <div className="hero-main">
+
+            {/* ---------- LEFT SIDE ---------- */}
+            <div className="hero-copy">
+
+              <p className="eyebrow">
+                AI-POWERED CITIZEN ASSISTANCE
+              </p>
+
+              <h1>
+                Your rights.
+                <br />
+                <span>Our priority.</span>
+              </h1>
+
+              <p className="hero-description">
+                From a confusing notice to a clear path forward.
+                Understand your problem, know your rights and take
+                the right action.
+              </p>
+
+
+              {/* CTA ROW */}
+              <div className="hero-actions">
+
+                <Link
+                  to="/register"
+                  className="primary-button"
+                >
+                  Start your case
+                  <span>↗</span>
+                </Link>
+
+                <a
+                  href="#journey"
+                  className="text-button"
+                >
+                  See how it works ↓
+                </a>
+
               </div>
+
+
+              {/* LEFT ANNOTATION */}
+              <div className="hero-note hero-note-left">
+                <span>01</span>
+
+                <div>
+                  Understand
+                  <br />
+                  your situation.
+                </div>
+              </div>
+
             </div>
 
-            <div className="hero-note hero-note-left">
-              <span>01</span>
-              Understand
-              <br />
-              your situation.
+
+            {/* ---------- RIGHT SIDE ---------- */}
+            <div className="hero-visual">
+
+              {/* Image frame */}
+              <div className="hero-frame">
+
+                <img
+                  src={ladyJustice}
+                  alt="Lady Justice"
+                  className="justice-image"
+                />
+
+              </div>
+
+
+              {/* RIGHT ANNOTATION */}
+              <div className="hero-note hero-note-right">
+                <span>02</span>
+
+                <div>
+                  Know your rights.
+                  <br />
+                  Take action.
+                </div>
+              </div>
+
             </div>
 
-            <div className="hero-note hero-note-right">
-              <span>02</span>
-              Know your rights.
-              <br />
-              Take action.
-            </div>
           </div>
 
+
+          {/* ================= HERO BOTTOM ================= */}
           <div className="hero-bottom">
-            <span>Citizen → Understanding → Action → Resolution</span>
+
+            <span>
+              Citizen → Understanding → Action → Resolution
+            </span>
 
             <span className="scroll-indicator">
               SCROLL TO EXPLORE ↓
             </span>
+
           </div>
+
         </section>
 
-        {/* INTRO */}
-        <section className="intro-section" id="journey">
-          <div className="section-label">THE ESahay APPROACH</div>
+
+        {/* ================= INTRO ================= */}
+        <section
+          className="intro-section"
+          id="journey"
+        >
+
+          <div className="section-label">
+            THE ESahay APPROACH
+          </div>
 
           <div className="intro-content">
+
             <h2>
               Everything you need.
               <br />
@@ -144,57 +210,101 @@ function Landing() {
               understandable and actionable journey — from the first
               description to resolution.
             </p>
+
           </div>
+
         </section>
 
-        {/* FEATURES */}
-        <section className="features-section" id="features">
+
+        {/* ================= FEATURES ================= */}
+        <section
+          className="features-section"
+          id="features"
+        >
+
           <div className="section-heading">
+
             <div>
-              <span className="section-label">THE SUPER 7</span>
+
+              <span className="section-label">
+                THE SUPER 7
+              </span>
+
               <h2>
                 One journey.
                 <br />
                 Seven capabilities.
               </h2>
+
             </div>
 
             <p>
-              Instead of making citizens figure out what to search, whom to
-              contact or what to submit, eSahay connects the entire process.
+              Instead of making citizens figure out what to search,
+              whom to contact or what to submit, eSahay connects
+              the entire process.
             </p>
+
           </div>
+
 
           <div className="feature-grid">
+
             {features.map((feature) => (
-              <article className="feature-card" key={feature.number}>
-                <span className="feature-number">{feature.number}</span>
 
-                <div className="feature-icon">✦</div>
+              <article
+                className="feature-card"
+                key={feature.number}
+              >
 
-                <h3>{feature.title}</h3>
+                <span className="feature-number">
+                  {feature.number}
+                </span>
 
-                <p>{feature.description}</p>
+                <div className="feature-icon">
+                  ✦
+                </div>
 
-                <span className="feature-arrow">Explore ↗</span>
+                <h3>
+                  {feature.title}
+                </h3>
+
+                <p>
+                  {feature.description}
+                </p>
+
+                <span className="feature-arrow">
+                  Explore ↗
+                </span>
+
               </article>
+
             ))}
+
           </div>
+
         </section>
 
-        {/* JOURNEY */}
+
+        {/* ================= JOURNEY ================= */}
         <section className="journey-section">
+
           <div className="journey-heading">
-            <span className="section-label">FROM PROBLEM TO RESOLUTION</span>
+
+            <span className="section-label">
+              FROM PROBLEM TO RESOLUTION
+            </span>
 
             <h2>
               No more guessing
               <br />
               what comes next.
             </h2>
+
           </div>
 
+
           <div className="journey-line">
+
             <div>
               <span>01</span>
               <strong>Describe</strong>
@@ -230,14 +340,25 @@ function Landing() {
               <strong>Resolve</strong>
               <small>Track your case</small>
             </div>
+
           </div>
+
         </section>
 
-        {/* CTA */}
-        <section className="final-cta" id="about">
-          <div className="cta-watermark">eSahay</div>
 
-          <span className="section-label">READY WHEN YOU ARE</span>
+        {/* ================= FINAL CTA ================= */}
+        <section
+          className="final-cta"
+          id="about"
+        >
+
+          <div className="cta-watermark">
+            eSahay
+          </div>
+
+          <span className="section-label">
+            READY WHEN YOU ARE
+          </span>
 
           <h2>
             Your problem is
@@ -246,26 +367,41 @@ function Landing() {
           </h2>
 
           <p>
-            Start with what happened. We'll help you figure out what comes
-            next.
+            Start with what happened. We'll help you figure
+            out what comes next.
           </p>
 
-          <Link to="/register" className="primary-button large">
-            Start with eSahay <span>↗</span>
+          <Link
+            to="/register"
+            className="primary-button large"
+          >
+            Start with eSahay
+            <span>↗</span>
           </Link>
+
         </section>
+
       </main>
 
-      {/* FOOTER */}
+
+      {/* ================= FOOTER ================= */}
       <footer className="landing-footer">
-        <div className="landing-logo">eSahay</div>
+
+        <div className="landing-logo">
+          eSahay
+        </div>
 
         <p>
-          Understand your problem. Know your rights. Take the right action.
+          Understand your problem. Know your rights.
+          Take the right action.
         </p>
 
-        <span>© 2026 eSahay</span>
+        <span>
+          © 2026 eSahay
+        </span>
+
       </footer>
+
     </div>
   );
 }
