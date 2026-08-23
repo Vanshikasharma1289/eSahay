@@ -1,6 +1,6 @@
 .case-tracking {
   min-height: 100vh;
-  padding: 125px max(5vw, 28px) 70px;
+  padding: 75px max(5vw, 28px) 70px;
   background:
     radial-gradient(circle at 85% 5%, rgba(107, 66, 25, 0.06), transparent 28%),
     #f6f0e5;

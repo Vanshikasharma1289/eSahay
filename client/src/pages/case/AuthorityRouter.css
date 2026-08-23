@@ -2,7 +2,7 @@
   min-height: 100vh;
 
   padding:
-    125px
+    75px
     max(5vw, 28px)
     70px;
 
@@ -191,6 +191,7 @@
   line-height: 0.92;
 
   letter-spacing: -0.035em;
+    color: #3e321e !important;
 }
 
 .authority-main__verified {
@@ -270,7 +271,7 @@
 
   margin: 0 0 11px;
 
-  color: #fff8eb;
+    color: #3e321e !important;
 
   font-family: "Cormorant Garamond", serif;
 

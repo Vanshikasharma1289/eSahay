@@ -1,7 +1,7 @@
 .case-follow-up {
   min-height: 100vh;
 
-  padding: 125px max(5vw, 28px) 70px;
+  padding: 75px max(5vw, 28px) 70px;
 
   background:
     radial-gradient(
